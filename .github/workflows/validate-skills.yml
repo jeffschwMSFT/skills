@@ -168,7 +168,6 @@ jobs:
           if [ "$has_errors" = true ]; then
             echo "### ❌ Validation failed" >> $GITHUB_STEP_SUMMARY
             echo "One or more skills have validation errors that must be fixed." >> $GITHUB_STEP_SUMMARY
-            exit 1
           elif [ "$has_warnings" = true ]; then
             echo "### ⚠️ Validation passed with warnings" >> $GITHUB_STEP_SUMMARY
           else

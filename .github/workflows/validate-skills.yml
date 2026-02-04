@@ -134,11 +134,11 @@ jobs:
               # Build details string
               details=""
               if [ "$errors" -gt 0 ]; then
-                error_msgs=$(jq -r '.errors | join("; ")' "$result_file")
+                error_msgs=$(jq -r '.errors | map(.message // .) | join("; ")' "$result_file")
                 details="$error_msgs"
               fi
               if [ "$warnings" -gt 0 ]; then
-                warning_msgs=$(jq -r '.warnings | join("; ")' "$result_file")
+                warning_msgs=$(jq -r '.warnings | map(.message // .) | join("; ")' "$result_file")
                 if [ -n "$details" ]; then
                   details="$details | Warnings: $warning_msgs"
                 else

@@ -38,8 +38,15 @@ This skill helps you create VS Code custom agent files that define specialized A
 Create a file with `.agent.md` extension in the `agents/` directory:
 
 ```
-agents/<agent-name>.agent.md
+agents/<agent-name>/<agent-name>.agent.md
 ```
+
+Create a readme within the agent folder to document the agent's purpose and usage:
+
+```agents/<agent-name>/README.md
+```
+
+This readme should provide an overview of the agent's role, guidelines for use, and any important details for users or developers interacting with the agent.
 
 ### Step 2: Add YAML frontmatter
 

@@ -29,7 +29,7 @@
 ## General Debugging Approach
 
 1. Reproduce under a debugger with native and managed debugging enabled
-2. On .NET 5+, set `COMPlus_EnableDiagnostics=1` and use dotnet-dump or dotnet-trace for post-mortem analysis
+2. On .NET 5+, set `DOTNET_EnableDiagnostics=1` and use dotnet-dump or dotnet-trace for post-mortem analysis
 3. Verify struct layout: `Marshal.SizeOf<T>()` must equal the native `sizeof` for every struct crossing the boundary
 4. (.NET Framework only) Enable [Managed Debugging Assistants](https://learn.microsoft.com/en-us/dotnet/framework/debug-trace-profile/diagnosing-errors-with-managed-debugging-assistants) (MDAs) for `pInvokeStackImbalance` and `invalidOverlappedToPinvoke`
 

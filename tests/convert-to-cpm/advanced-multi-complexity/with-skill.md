@@ -106,6 +106,7 @@ $ grep -rn "PackageReference\|PackageVersion" --include="*.csproj" --include="*.
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
     <BlobsVersion>12.24.0</BlobsVersion>
     <HostingVersion>8.0.1</HostingVersion>
   </PropertyGroup>
@@ -177,7 +178,7 @@ I recommend conditional `PackageVersion` entries. Does that work?
 - Move the `Version` to `Directory.Packages.props` and remove it from `Common.props`, or
 - Leave `Common.props` unchanged (the `PackageReference` will still need a corresponding `PackageVersion` entry)?
 
-Note: `$(LangVersion)` in `Directory.Build.props` is unrelated to versioning and will not be modified.
+Note: `$(LangVersion)` and `$(ImplicitUsings)` in `Directory.Build.props` are unrelated to versioning and will not be modified.
 
 ---
 
@@ -186,7 +187,7 @@ Note: `$(LangVersion)` in `Directory.Build.props` is unrelated to versioning and
 ### 👤 User
 
 1. Use 10.0.1 centrally. VersionOverride for Core (9.0.0) and Legacy (8.0.5 — bump from 8.0.4 to fix the advisory).
-2. Yes, 8.0.11 centrally with VersionOverride for Legacy.
+2. Yes, 12.24.0 centrally with VersionOverride for Legacy.
 3. Inline it and remove the property.
 4. Keep the property — we update that version frequently.
 5. Conditional PackageVersion entries, that sounds right.
@@ -304,7 +305,7 @@ Updated `Common.props`:
 
 **Remove BlobsVersion from Directory.Build.props**
 
-Directory.Build.props — removed `<BlobsVersion>` property; preserved `<LangVersion>` and `<HostingVersion>`
+Directory.Build.props — removed `<BlobsVersion>` property; preserved `<LangVersion>`, `<ImplicitUsings>`, and `<HostingVersion>`
 
 Updated `Directory.Build.props`:
 
@@ -312,6 +313,7 @@ Updated `Directory.Build.props`:
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
     <HostingVersion>8.0.1</HostingVersion>
   </PropertyGroup>
   <Import Project="Common.props" />
@@ -389,9 +391,15 @@ Build succeeded.
 |---------|---------|---------|
 | Api (net8.0) | Azure.Storage.Blobs | 12.24.0 |
 | Api (net8.0) | Microsoft.AspNetCore.Mvc.NewtonsoftJson | 8.0.11 |
+| Api (net6.0) | Azure.Storage.Blobs | 12.24.0 |
 | Api (net6.0) | Microsoft.AspNetCore.Mvc.NewtonsoftJson | 6.0.36 |
+| Api | Microsoft.Extensions.Logging | 9.0.0 |
 | Api | System.Text.Json | 10.0.1 |
 | Core | Microsoft.Extensions.Hosting | 8.0.1 |
+| Core | Microsoft.Extensions.Logging | 9.0.0 |
+| Legacy | Microsoft.Extensions.Logging | 9.0.0 |
+| Tests | Microsoft.Extensions.Logging | 9.0.0 |
+| Tests | System.Text.Json | 10.0.1 |
 | Tests | xunit | 2.9.3 |
 | Web | Microsoft.Extensions.Logging | 9.0.0 |
 | Web | OpenTelemetry.Extensions.Hosting | 1.15.0 |
@@ -410,7 +418,7 @@ Build succeeded.
   - **`$(HostingVersion)`**: Kept as property, referenced from `Directory.Packages.props`
   - **Mvc.NewtonsoftJson**: Conditional `PackageVersion` entries for net6.0/net8.0
   - **Microsoft.Extensions.Logging**: Moved from `Common.props` to `Directory.Packages.props`
-- **Preserved**: `$(LangVersion)` and `$(HostingVersion)` in `Directory.Build.props`
+- **Preserved**: `$(LangVersion)`, `$(ImplicitUsings)`, and `$(HostingVersion)` in `Directory.Build.props`
 - `dotnet restore` and `dotnet build` both succeeded
 - Package comparison confirms 1 intentional version change (System.Text.Json security fix for CVE-2024-43485)
 

@@ -50,9 +50,9 @@ Data/Data.csproj
 
 **Establish baseline build and capture package snapshot**
 
-$ dotnet clean Platform.slnx
-$ dotnet build Platform.slnx -bl:baseline.binlog
-$ dotnet list Platform.slnx package --format json > baseline-packages.json
+$ dotnet clean Platform.sln
+$ dotnet build Platform.sln -bl:baseline.binlog
+$ dotnet list Platform.sln package --format json > baseline-packages.json
 
 ```
 Build succeeded.
@@ -246,9 +246,9 @@ $ dotnet restore Platform.sln
 
 **Build solution and capture post-conversion snapshot**
 
-$ dotnet clean Platform.slnx
-$ dotnet build Platform.slnx -bl:after-cpm.binlog
-$ dotnet list Platform.slnx package --format json > after-cpm-packages.json
+$ dotnet clean Platform.sln
+$ dotnet build Platform.sln -bl:after-cpm.binlog
+$ dotnet list Platform.sln package --format json > after-cpm-packages.json
 
 ```
 Build succeeded.

@@ -6,7 +6,7 @@ A solution with four projects where two packages appear at different versions ac
 
 ```
 📂 repo/
-├── 📄 Inventory.sln
+├── 📄 Inventory.slnx
 ├── 📂 Api/
 │   └── 📄 Api.csproj
 ├── 📂 Worker/
@@ -80,7 +80,7 @@ Key conflicts:
 
 ## Input prompt
 
-Convert Inventory.sln to Central Package Management.
+Convert Inventory.slnx to Central Package Management.
 
 ## What the skill should produce
 

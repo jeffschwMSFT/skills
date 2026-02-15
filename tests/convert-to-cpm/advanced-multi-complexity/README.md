@@ -6,7 +6,7 @@ A repository with a solution containing five projects that combines multiple CPM
 
 ```
 📂 repo/
-├── 📄 Enterprise.sln
+├── 📄 Enterprise.slnx
 ├── 📄 Directory.Build.props
 ├── 📄 Common.props
 ├── 📂 Web/
@@ -128,11 +128,11 @@ A repository with a solution containing five projects that combines multiple CPM
 3. **MSBuild properties**: `$(BlobsVersion)` and `$(HostingVersion)` in `Directory.Build.props`
 4. **Conditional PackageReference**: `Microsoft.AspNetCore.Mvc.NewtonsoftJson` uses target framework conditions in Api.csproj with different versions per TFM
 5. **Shared .props file**: `Common.props` contains a `PackageReference` for `Microsoft.Extensions.Logging` that applies to all projects
-6. **Non-version property**: `$(LangVersion)` in `Directory.Build.props` must not be removed
+6. **Non-version properties**: `$(LangVersion)` and `$(ImplicitUsings)` in `Directory.Build.props` must not be removed
 
 ## Input prompt
 
-I need to convert this entire repository to Central Package Management. The solution is at Enterprise.sln. There are some complications: package versions defined as MSBuild properties, conditional package references for multi-targeting, and a shared Common.props that adds a package to all projects.
+I need to convert this entire repository to Central Package Management. The solution is at Enterprise.slnx. There are some complications: package versions defined as MSBuild properties, conditional package references for multi-targeting, and a shared Common.props that adds a package to all projects.
 
 ## What the skill should produce
 
@@ -145,6 +145,6 @@ I need to convert this entire repository to Central Package Management. The solu
   - How to handle the conditional PackageReference (conditional `PackageVersion` vs. `VersionOverride`)
   - How to handle the PackageReference in `Common.props`
 - Creates `Directory.Packages.props` reflecting all decisions
-- Removes only version-related properties, preserving `$(LangVersion)`
+- Removes only version-related properties, preserving `$(LangVersion)` and `$(ImplicitUsings)`
 - Validates with `dotnet restore` and `dotnet build`
 - Presents a complete summary noting any items that need ongoing attention

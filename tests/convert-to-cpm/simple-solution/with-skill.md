@@ -51,9 +51,9 @@ Tests/Tests.csproj
 
 **Establish baseline build and capture package snapshot**
 
-$ dotnet clean MyApp.slnx
-$ dotnet build MyApp.slnx -bl:baseline.binlog
-$ dotnet list MyApp.slnx package --format json > baseline-packages.json
+$ dotnet clean MyApp.sln
+$ dotnet build MyApp.sln -bl:baseline.binlog
+$ dotnet list MyApp.sln package --format json > baseline-packages.json
 
 ```
 Build succeeded.
@@ -102,7 +102,7 @@ $ grep -rn "PackageReference\|PackageVersion" --include="*.csproj" --include="*.
 
 ### 💬 Copilot
 
-**Audit results — 3 projects, 5 unique packages:**
+**Audit results — 3 projects, 6 unique packages:**
 
 | Package | Version | Projects |
 |---------|---------|----------|
@@ -206,9 +206,9 @@ $ dotnet restore MyApp.sln
 
 **Build solution and capture post-conversion snapshot**
 
-$ dotnet clean MyApp.slnx
-$ dotnet build MyApp.slnx -bl:after-cpm.binlog
-$ dotnet list MyApp.slnx package --format json > after-cpm-packages.json
+$ dotnet clean MyApp.sln
+$ dotnet build MyApp.sln -bl:after-cpm.binlog
+$ dotnet list MyApp.sln package --format json > after-cpm-packages.json
 
 ```
 Build succeeded.
@@ -241,7 +241,7 @@ No version changes detected — the conversion is fully version-neutral.
 **Conversion complete.** Summary:
 
 - **3 projects** converted to Central Package Management
-- **5 unique packages** (6 references) centralized in `Directory.Packages.props`
+- **6 packages** centralized in `Directory.Packages.props`
 - `PrivateAssets="all"` preserved on `xunit.runner.visualstudio` in Tests.csproj
 - No version conflicts or special cases encountered
 - `dotnet restore` and `dotnet build` both succeeded

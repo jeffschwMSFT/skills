@@ -4,7 +4,7 @@
 
 ### 👤 User
 
-I need to convert this entire repository to Central Package Management. The solution is at Enterprise.sln. There are some complications: package versions defined as MSBuild properties, conditional package references for multi-targeting, and a shared Common.props that adds a package to all projects.
+I need to convert this entire repository to Central Package Management. The solution is at Enterprise.slnx. There are some complications: package versions defined as MSBuild properties, conditional package references for multi-targeting, and a shared Common.props that adds a package to all projects.
 
 ---
 
@@ -14,7 +14,7 @@ I need to convert this entire repository to Central Package Management. The solu
 
 **List projects and scan packages**
 
-$ dotnet sln Enterprise.sln list && grep -rn "PackageReference" --include="*.csproj" --include="*.props" .
+$ dotnet sln Enterprise.slnx list && grep -rn "PackageReference" --include="*.csproj" --include="*.props" .
 
 ```
 Web/Web.csproj

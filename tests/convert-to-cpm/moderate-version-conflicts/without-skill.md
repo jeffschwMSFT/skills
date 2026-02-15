@@ -4,7 +4,7 @@
 
 ### 👤 User
 
-Convert Inventory.sln to Central Package Management.
+Convert Inventory.slnx to Central Package Management.
 
 ---
 
@@ -14,7 +14,7 @@ Convert Inventory.sln to Central Package Management.
 
 **List projects and extract packages**
 
-$ dotnet sln Inventory.sln list && grep -rn "PackageReference" --include="*.csproj" .
+$ dotnet sln Inventory.slnx list && grep -rn "PackageReference" --include="*.csproj" .
 
 ```
 Api/Api.csproj

@@ -71,7 +71,7 @@ I'd like to convert MyApp.sln to Central Package Management.
 
 - The agent runs `dotnet sln list` to enumerate projects
 - Checks for existing `Directory.Packages.props`
-- Presents an audit showing 3 projects and 5 unique packages with no conflicts
+- Presents an audit showing 3 projects and 6 unique packages with no conflicts
 - Creates `Directory.Packages.props` at the solution root
 - Removes `Version` attributes from all three project files, preserving `PrivateAssets` on xunit.runner.visualstudio
 - Runs `dotnet restore` and `dotnet build` to validate

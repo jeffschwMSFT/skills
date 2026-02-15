@@ -38,15 +38,7 @@ If the scope is unclear, ask the user.
 
 ### Step 2: Establish baseline build
 
-Before making any changes, verify the scope builds successfully from a clean state and capture a baseline for later comparison:
-
-```bash
-dotnet clean
-dotnet build -bl:baseline.binlog
-dotnet list package --format json > baseline-packages.json
-```
-
-If the baseline build fails, stop and inform the user — the scope must build cleanly before conversion. The `baseline.binlog` and `baseline-packages.json` capture all resolved package references and versions per project for later comparison.
+Before making any changes, verify the scope builds successfully and capture a baseline snapshot using the procedure in [baseline-comparison.md](references/baseline-comparison.md). If the baseline build fails, stop and inform the user — the scope must build cleanly before conversion.
 
 ### Step 3: Check for existing CPM
 
@@ -76,32 +68,17 @@ Remove the `Version` attribute from every `<PackageReference>` that now has a co
 
 ### Step 7: Handle MSBuild version properties
 
-For `PackageReference` items that used MSBuild properties for versions, determine whether to inline the resolved value or keep the property reference in `Directory.Packages.props`. See [msbuild-property-handling.md](references/msbuild-property-handling.md) for the decision workflow and import order requirements.
+For `PackageReference` items that used MSBuild properties for versions, determine whether to inline the resolved value or keep the property reference in `Directory.Packages.props`. After validation succeeds in step 8, remove inlined version properties from `Directory.Build.props` or other files, verifying they have no remaining references. See [msbuild-property-handling.md](references/msbuild-property-handling.md) for the decision workflow, import order requirements, and cleanup procedure.
 
 ### Step 8: Restore and validate
 
-Run a clean restore and build, producing post-conversion artifacts for comparison:
+Run a clean restore and build, producing post-conversion artifacts for comparison using the procedure in [baseline-comparison.md](references/baseline-comparison.md). If errors occur, see [validation-and-errors.md](references/validation-and-errors.md) for NuGet error codes and multi-TFM guidance.
 
-```bash
-dotnet clean
-dotnet restore
-dotnet build -bl:after-cpm.binlog
-dotnet list package --format json > after-cpm-packages.json
-```
+### Step 9: Summary and package list comparison
 
-If errors occur, see [validation-and-errors.md](references/validation-and-errors.md) for NuGet error codes and multi-TFM guidance.
+Compare baseline and post-conversion package lists to produce a per-project version diff. See [baseline-comparison.md](references/baseline-comparison.md) for the comparison procedure and table format. Present changes and unchanged packages in separate tables so the user can verify the conversion.
 
-### Step 9: Clean up obsolete properties
-
-Remove inlined version properties from `Directory.Build.props` or other files, after verifying they have no remaining references. See [msbuild-property-handling.md](references/msbuild-property-handling.md) for cleanup procedure.
-
-### Step 10: Summary and package list comparison
-
-Compare `baseline-packages.json` and `after-cpm-packages.json` to produce a per-project package version diff. Present changes (version bumps, `VersionOverride` entries, added/removed packages) and unchanged packages in separate tables so the user can verify the conversion. See [baseline-comparison.md](references/baseline-comparison.md) for the comparison procedure and table format.
-
-Also present: number of projects converted, packages centralized, any skipped packages, and MSBuild properties kept or removed. Recommend running `dotnet test`.
-
-Inform the user that `baseline.binlog` and `after-cpm.binlog` are available for manual inspection in the [MSBuild Structured Log Viewer](https://msbuildlog.com/), and that the `baseline-packages.json` and `after-cpm-packages.json` files contain the raw package lists used for comparison.
+Also present: number of projects converted, packages centralized, any skipped packages, and MSBuild properties kept or removed. Recommend running `dotnet test`. Inform the user that binlog files and package list JSON files are available for manual inspection.
 
 ## Validation
 

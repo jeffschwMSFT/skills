@@ -250,7 +250,27 @@ No version changes detected — the conversion is fully version-neutral.
 - `dotnet restore` and `dotnet build` both succeeded
 - Package comparison confirms no version changes
 
-The `baseline.binlog` and `after-cpm.binlog` files are available for manual inspection in the [MSBuild Structured Log Viewer](https://msbuildlog.com/). The `baseline-packages.json` and `after-cpm-packages.json` files contain the raw package lists used for comparison.
+---
+
+<sub>⏱️ 1m 8s</sub>
+
+### ✅ `create`
+
+**Save conversion summary report**
+
+MyApp/convert-to-cpm.md
+
+```
+Created file MyApp/convert-to-cpm.md
+```
+
+---
+
+<sub>⏱️ 1m 10s</sub>
+
+### 💬 Copilot
+
+The `baseline.binlog` and `after-cpm.binlog` files are available for manual inspection in the [MSBuild Structured Log Viewer](https://msbuildlog.com/). The `baseline-packages.json` and `after-cpm-packages.json` files contain the raw package lists used for comparison. The `convert-to-cpm.md` file contains this summary and can be used as a pull request description.
 
 I recommend running your tests to verify no behavioral changes:
 

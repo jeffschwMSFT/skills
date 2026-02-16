@@ -64,6 +64,7 @@ Remove the `Version` attribute from every `<PackageReference>` that now has a co
 
 - Preserve all other attributes (`PrivateAssets`, `IncludeAssets`, `ExcludeAssets`, `GeneratePathProperty`, `Aliases`)
 - Preserve conditional `<ItemGroup>` elements — only remove the `Version` attribute within them
+- Retain each file's existing indentation style (spaces vs. tabs, indentation depth) and blank lines — do not reformat or reorganize unchanged lines
 - Use `VersionOverride` (with user confirmation) when a project needs a different version than the central one
 
 ### Step 7: Handle MSBuild version properties
@@ -78,7 +79,9 @@ Run a clean restore and build, producing post-conversion artifacts for compariso
 
 Compare baseline and post-conversion package lists to produce a per-project version diff. See [baseline-comparison.md](references/baseline-comparison.md) for the comparison procedure and table format. Present changes and unchanged packages in separate tables so the user can verify the conversion.
 
-Also present: number of projects converted, packages centralized, any skipped packages, and MSBuild properties kept or removed. Recommend running `dotnet test`. Inform the user that binlog files and package list JSON files are available for manual inspection.
+Also present: number of projects converted, packages centralized, any skipped packages, and MSBuild properties kept or removed. Recommend running `dotnet test`.
+
+Save the full summary (including comparison tables, conversion statistics, and recommendations) as a `convert-to-cpm.md` markdown file alongside the binlog and JSON artifacts. Inform the user that this file can be used as a pull request description. Also inform the user that binlog files and package list JSON files are available for manual inspection.
 
 ## Validation
 
@@ -92,5 +95,5 @@ Also present: number of projects converted, packages centralized, any skipped pa
 
 ## More Info
 
-- [Central Package Management documentation](https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management)
+- [Central Package Management documentation](https://learn.microsoft.com/nuget/consume-packages/central-package-management)
 - [Validation and common errors](references/validation-and-errors.md)

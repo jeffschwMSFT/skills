@@ -17,7 +17,7 @@ For multi-target framework projects (those with `<TargetFrameworks>` containing 
 |-------|---------|-----|
 | **NU1008** | A `PackageReference` still has a `Version` attribute when CPM is enabled | Remove the `Version` attribute or convert to `VersionOverride` |
 | **NU1010** | A `PackageReference` has no corresponding `PackageVersion` entry | Add the missing `<PackageVersion>` entry to `Directory.Packages.props` |
-| **NU1507** | Multiple package sources without package source mapping | Configure [package source mapping](https://learn.microsoft.com/en-us/nuget/consume-packages/package-source-mapping) |
+| **NU1507** | Multiple package sources without package source mapping | Configure [package source mapping](https://learn.microsoft.com/nuget/consume-packages/package-source-mapping) |
 
 ## Build validation
 
@@ -35,5 +35,5 @@ dotnet build
 | Multiple `Directory.Packages.props` files conflict | Use `Import` to chain files, or consolidate into one. Only the nearest file is evaluated per project |
 | Version properties in `.props` files cause build errors | Decide whether to inline the version or keep the property. See [msbuild-property-handling.md](msbuild-property-handling.md) |
 | Conditional PackageReference loses its condition | Move the condition to the `PackageVersion` entry in `Directory.Packages.props`, or use `VersionOverride` in the project |
-| `packages.config` projects are in scope | These must first be [migrated to PackageReference](https://learn.microsoft.com/en-us/nuget/consume-packages/migrate-packages-config-to-package-reference) before CPM conversion |
+| `packages.config` projects are in scope | These must first be [migrated to PackageReference](https://learn.microsoft.com/nuget/consume-packages/migrate-packages-config-to-package-reference) before CPM conversion |
 | Global tools or CLI tool references affected | `DotNetCliToolReference` items are deprecated and not managed by CPM. They can be ignored |

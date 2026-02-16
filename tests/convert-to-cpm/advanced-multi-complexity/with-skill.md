@@ -422,7 +422,27 @@ Build succeeded.
 - `dotnet restore` and `dotnet build` both succeeded
 - Package comparison confirms 1 intentional version change (System.Text.Json security fix for CVE-2024-43485)
 
-The `baseline.binlog` and `after-cpm.binlog` files are available for manual inspection in the [MSBuild Structured Log Viewer](https://msbuildlog.com/). The `baseline-packages.json` and `after-cpm-packages.json` files contain the raw package lists used for comparison.
+---
+
+<sub>⏱️ 3m 5s</sub>
+
+### ✅ `create`
+
+**Save conversion summary report**
+
+./convert-to-cpm.md
+
+```
+Created file ./convert-to-cpm.md
+```
+
+---
+
+<sub>⏱️ 3m 7s</sub>
+
+### 💬 Copilot
+
+The `baseline.binlog` and `after-cpm.binlog` files are available for manual inspection in the [MSBuild Structured Log Viewer](https://msbuildlog.com/). The `baseline-packages.json` and `after-cpm-packages.json` files contain the raw package lists used for comparison. The `convert-to-cpm.md` file contains this summary and can be used as a pull request description.
 
 **Ongoing considerations:**
 - When `$(HostingVersion)` is updated in `Directory.Build.props`, it will automatically flow to `Directory.Packages.props`

@@ -1,5 +1,5 @@
 {
-  "lastUpdate": 1771676496002,
+  "lastUpdate": 1771683539828,
   "entries": {
     "Quality": [
       {
@@ -1371,6 +1371,143 @@
             "unit": "Score (0-10)"
           }
         ]
+      },
+      {
+        "tool": "customBiggerIsBetter",
+        "commit": {
+          "timestamp": "2026-02-20T23:10:00+00:00",
+          "url": "https://github.com/dotnet/skills/commit/edd887744208a4ac6006275a0ef530884ea6d3bc",
+          "id": "edd887744208a4ac6006275a0ef530884ea6d3bc",
+          "message": "Added C# MCP Server development skills (#36)",
+          "author": {
+            "name": "leslierichardson95",
+            "username": "ViktorHofer"
+          }
+        },
+        "model": "claude-opus-4.5",
+        "benches": [
+          {
+            "name": "build-parallelism/Analyze build parallelism bottlenecks - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 4.599999904632568
+          },
+          {
+            "name": "build-parallelism/Analyze build parallelism bottlenecks - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 2.0
+          },
+          {
+            "name": "build-perf-diagnostics/Analyze analyzer performance impact on builds - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 2.0
+          },
+          {
+            "name": "build-perf-diagnostics/Analyze analyzer performance impact on builds - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 4.0
+          },
+          {
+            "name": "check-bin-obj-clash/Diagnose bin/obj output path clashes - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 2.5999999046325684
+          },
+          {
+            "name": "check-bin-obj-clash/Diagnose bin/obj output path clashes - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 5.400000095367432
+          },
+          {
+            "name": "common-build-errors/Diagnose C# compiler errors - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 6.0
+          },
+          {
+            "name": "common-build-errors/Diagnose C# compiler errors - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 6.0
+          },
+          {
+            "name": "eval-performance/Analyze MSBuild evaluation performance issues - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 7.400000095367432
+          },
+          {
+            "name": "eval-performance/Analyze MSBuild evaluation performance issues - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 6.0
+          },
+          {
+            "name": "including-generated-files/Diagnose generated file inclusion failure - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 8.600000381469727
+          },
+          {
+            "name": "including-generated-files/Diagnose generated file inclusion failure - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 6.0
+          },
+          {
+            "name": "incremental-build/Analyze incremental build issues - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 6.0
+          },
+          {
+            "name": "incremental-build/Analyze incremental build issues - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 6.0
+          },
+          {
+            "name": "msbuild-antipatterns/Review MSBuild files for anti-patterns and style issues - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 10.0
+          },
+          {
+            "name": "msbuild-antipatterns/Review MSBuild files for anti-patterns and style issues - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 9.399999618530273
+          },
+          {
+            "name": "msbuild-modernization/Modernize legacy project to SDK-style - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 10.0
+          },
+          {
+            "name": "msbuild-modernization/Modernize legacy project to SDK-style - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 10.0
+          },
+          {
+            "name": "multitarget-tfm-issues/Diagnose multi-targeting build failure - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 6.599999904632568
+          },
+          {
+            "name": "multitarget-tfm-issues/Diagnose multi-targeting build failure - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 6.0
+          },
+          {
+            "name": "nuget-restore-failures/Diagnose NuGet restore failures - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 10.0
+          },
+          {
+            "name": "nuget-restore-failures/Diagnose NuGet restore failures - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 10.0
+          },
+          {
+            "name": "sdk-workload-resolution/Diagnose SDK resolution failures - Skilled Quality",
+            "unit": "Score (0-10)",
+            "value": 8.600000381469727
+          },
+          {
+            "name": "sdk-workload-resolution/Diagnose SDK resolution failures - Vanilla Quality",
+            "unit": "Score (0-10)",
+            "value": 8.600000381469727
+          }
+        ],
+        "date": 1771683539828
       }
     ],
     "Efficiency": [
@@ -2743,6 +2880,143 @@
             "unit": "tokens"
           }
         ]
+      },
+      {
+        "tool": "customSmallerIsBetter",
+        "commit": {
+          "timestamp": "2026-02-20T23:10:00+00:00",
+          "url": "https://github.com/dotnet/skills/commit/edd887744208a4ac6006275a0ef530884ea6d3bc",
+          "id": "edd887744208a4ac6006275a0ef530884ea6d3bc",
+          "message": "Added C# MCP Server development skills (#36)",
+          "author": {
+            "name": "leslierichardson95",
+            "username": "ViktorHofer"
+          }
+        },
+        "model": "claude-opus-4.5",
+        "benches": [
+          {
+            "name": "build-parallelism/Analyze build parallelism bottlenecks - Skilled Time",
+            "unit": "seconds",
+            "value": 120.3
+          },
+          {
+            "name": "build-parallelism/Analyze build parallelism bottlenecks - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 143884.0
+          },
+          {
+            "name": "build-perf-diagnostics/Analyze analyzer performance impact on builds - Skilled Time",
+            "unit": "seconds",
+            "value": 120.1
+          },
+          {
+            "name": "build-perf-diagnostics/Analyze analyzer performance impact on builds - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 110585.0
+          },
+          {
+            "name": "check-bin-obj-clash/Diagnose bin/obj output path clashes - Skilled Time",
+            "unit": "seconds",
+            "value": 120.1
+          },
+          {
+            "name": "check-bin-obj-clash/Diagnose bin/obj output path clashes - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 110492.0
+          },
+          {
+            "name": "common-build-errors/Diagnose C# compiler errors - Skilled Time",
+            "unit": "seconds",
+            "value": 89.6
+          },
+          {
+            "name": "common-build-errors/Diagnose C# compiler errors - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 75886.0
+          },
+          {
+            "name": "eval-performance/Analyze MSBuild evaluation performance issues - Skilled Time",
+            "unit": "seconds",
+            "value": 54.5
+          },
+          {
+            "name": "eval-performance/Analyze MSBuild evaluation performance issues - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 65249.0
+          },
+          {
+            "name": "including-generated-files/Diagnose generated file inclusion failure - Skilled Time",
+            "unit": "seconds",
+            "value": 122.0
+          },
+          {
+            "name": "including-generated-files/Diagnose generated file inclusion failure - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 151261.0
+          },
+          {
+            "name": "incremental-build/Analyze incremental build issues - Skilled Time",
+            "unit": "seconds",
+            "value": 19.6
+          },
+          {
+            "name": "incremental-build/Analyze incremental build issues - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 41841.0
+          },
+          {
+            "name": "msbuild-antipatterns/Review MSBuild files for anti-patterns and style issues - Skilled Time",
+            "unit": "seconds",
+            "value": 26.4
+          },
+          {
+            "name": "msbuild-antipatterns/Review MSBuild files for anti-patterns and style issues - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 91573.0
+          },
+          {
+            "name": "msbuild-modernization/Modernize legacy project to SDK-style - Skilled Time",
+            "unit": "seconds",
+            "value": 28.9
+          },
+          {
+            "name": "msbuild-modernization/Modernize legacy project to SDK-style - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 103420.0
+          },
+          {
+            "name": "multitarget-tfm-issues/Diagnose multi-targeting build failure - Skilled Time",
+            "unit": "seconds",
+            "value": 39.5
+          },
+          {
+            "name": "multitarget-tfm-issues/Diagnose multi-targeting build failure - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 95630.0
+          },
+          {
+            "name": "nuget-restore-failures/Diagnose NuGet restore failures - Skilled Time",
+            "unit": "seconds",
+            "value": 29.9
+          },
+          {
+            "name": "nuget-restore-failures/Diagnose NuGet restore failures - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 73236.0
+          },
+          {
+            "name": "sdk-workload-resolution/Diagnose SDK resolution failures - Skilled Time",
+            "unit": "seconds",
+            "value": 22.4
+          },
+          {
+            "name": "sdk-workload-resolution/Diagnose SDK resolution failures - Skilled Tokens In",
+            "unit": "tokens",
+            "value": 70826.0
+          }
+        ],
+        "date": 1771683539828
       }
     ]
   },

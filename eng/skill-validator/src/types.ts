@@ -1,3 +1,12 @@
+export interface MCPServerDef {
+  type?: string;
+  command: string;
+  args: string[];
+  tools?: string[];
+  env?: Record<string, string>;
+  cwd?: string;
+}
+
 export interface SkillInfo {
   name: string;
   description: string;
@@ -6,6 +15,7 @@ export interface SkillInfo {
   skillMdContent: string;
   evalPath: string | null;
   evalConfig: EvalConfig | null;
+  mcpServers?: Record<string, MCPServerDef>;
 }
 
 export interface EvalConfig {

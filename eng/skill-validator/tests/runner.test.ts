@@ -47,6 +47,41 @@ describe("buildSessionConfig", () => {
     const config = buildSessionConfig(mockSkill, "gpt-4.1", "/tmp/work");
     expect(config.infiniteSessions).toEqual({ enabled: false });
   });
+
+  it("does not include mcpServers when none provided", () => {
+    const config = buildSessionConfig(mockSkill, "gpt-4.1", "/tmp/work");
+    expect(config.mcpServers).toBeUndefined();
+  });
+
+  it("does not include mcpServers for baseline (null skill)", () => {
+    const config = buildSessionConfig(null, "gpt-4.1", "/tmp/work");
+    expect(config.mcpServers).toBeUndefined();
+  });
+
+  it("includes mcpServers when provided", () => {
+    const mcpServers = {
+      "binlog-mcp": {
+        command: "dnx",
+        args: ["-y", "baronfel.binlog.mcp@0.0.13"],
+        tools: ["*"],
+      },
+    };
+    const config = buildSessionConfig(mockSkill, "gpt-4.1", "/tmp/work", mcpServers);
+    expect(config.mcpServers).toBeDefined();
+    expect(config.mcpServers!["binlog-mcp"]).toBeDefined();
+    expect((config.mcpServers!["binlog-mcp"] as any).command).toBe("dnx");
+    expect((config.mcpServers!["binlog-mcp"] as any).args).toEqual(["-y", "baronfel.binlog.mcp@0.0.13"]);
+    expect((config.mcpServers!["binlog-mcp"] as any).tools).toEqual(["*"]);
+  });
+
+  it("defaults MCP server type to stdio when not specified", () => {
+    const mcpServers = {
+      "test-mcp": { command: "test-cmd", args: ["--flag"] },
+    };
+    const config = buildSessionConfig(mockSkill, "gpt-4.1", "/tmp/work", mcpServers);
+    expect((config.mcpServers!["test-mcp"] as any).type).toBe("stdio");
+    expect((config.mcpServers!["test-mcp"] as any).tools).toEqual(["*"]);
+  });
 });
 
 describe("checkPermission", () => {

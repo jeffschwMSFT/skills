@@ -1,8 +1,8 @@
 import { readdir, readFile, stat } from "node:fs/promises";
-import { join, basename } from "node:path";
+import { join, basename, dirname, resolve } from "node:path";
 import { parse as parseYaml } from "yaml";
 import { parseEvalConfig } from "./eval-schema.js";
-import type { SkillInfo, EvalConfig } from "./types.js";
+import type { SkillInfo, EvalConfig, MCPServerDef } from "./types.js";
 
 function parseFrontmatter(content: string): {
   metadata: Record<string, string>;
@@ -33,6 +33,35 @@ async function fileExists(path: string): Promise<boolean> {
   }
 }
 
+/**
+ * Walk up from a skill directory to find the nearest plugin.json and
+ * extract its mcpServers map (if any).
+ */
+async function findPluginMcpServers(
+  skillDir: string,
+  maxLevels = 4
+): Promise<Record<string, MCPServerDef> | undefined> {
+  let dir = resolve(skillDir);
+  for (let i = 0; i < maxLevels; i++) {
+    const candidate = join(dir, "plugin.json");
+    if (await fileExists(candidate)) {
+      try {
+        const raw = JSON.parse(await readFile(candidate, "utf-8"));
+        if (raw.mcpServers && typeof raw.mcpServers === "object") {
+          return raw.mcpServers as Record<string, MCPServerDef>;
+        }
+      } catch {
+        // malformed plugin.json — skip
+      }
+      return undefined;
+    }
+    const parent = dirname(dir);
+    if (parent === dir) break; // filesystem root
+    dir = parent;
+  }
+  return undefined;
+}
+
 async function discoverSkillAt(dirPath: string, testsDir?: string): Promise<SkillInfo | null> {
   const skillMdPath = join(dirPath, "SKILL.md");
   if (!(await fileExists(skillMdPath))) return null;
@@ -56,6 +85,8 @@ async function discoverSkillAt(dirPath: string, testsDir?: string): Promise<Skil
     evalConfig = parseEvalConfig(parsed);
   }
 
+  const mcpServers = await findPluginMcpServers(dirPath);
+
   return {
     name,
     description,
@@ -64,6 +95,7 @@ async function discoverSkillAt(dirPath: string, testsDir?: string): Promise<Skil
     skillMdContent,
     evalPath,
     evalConfig,
+    mcpServers,
   };
 }
 

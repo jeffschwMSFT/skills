@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { writeFile, mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import type { SkillVerdict, ReporterSpec, ScenarioComparison } from "./types.js";
 
 export async function reportResults(
@@ -306,6 +306,17 @@ function formatDelta(value: number): string {
   return "0.0%";
 }
 
+/** Sanitize a skill name into a safe single directory segment by slugifying. */
+function safeDirName(name: string): string {
+  // Strip to a single path segment and reject the traversal aliases ".", "..", and empty strings.
+  const seg = basename(name || "");
+  if (seg === "." || seg === "..") throw new Error(`Invalid skill name for directory use: '${name}'`);
+  // Replace characters that are unsafe in directory names with hyphens and collapse runs.
+  const slugified = seg.replace(/[^a-zA-Z0-9._-]/g, "-").replace(/-{2,}/g, "-").replace(/^-|-$/g, "");
+  if (!slugified) throw new Error(`Invalid skill name for directory use: '${name}'`);
+  return slugified;
+}
+
 function truncate(s: string, max: number): string {
   return s.length > max ? s.slice(0, max - 3) + "..." : s;
 }
@@ -385,7 +396,7 @@ async function reportMarkdown(
 
   // Write per-scenario judge reports
   for (const verdict of verdicts) {
-    const skillDir = join(resultsDir, verdict.skillName);
+    const skillDir = join(resultsDir, safeDirName(verdict.skillName));
     await mkdir(skillDir, { recursive: true });
 
     for (const scenario of verdict.scenarios) {
@@ -449,7 +460,7 @@ async function reportJson(
 
   // Write per-skill verdict.json files for downstream consumers (e.g. dashboard)
   for (const verdict of verdicts) {
-    const skillDir = join(resultsDir, verdict.skillName);
+    const skillDir = join(resultsDir, safeDirName(verdict.skillName));
     await mkdir(skillDir, { recursive: true });
     const verdictJson = JSON.stringify(verdict, null, 2);
     await writeFile(join(skillDir, "verdict.json"), verdictJson, "utf-8");

@@ -1,6 +1,10 @@
+import { exec as execCb } from "node:child_process";
 import { mkdtemp, cp, writeFile, mkdir, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, dirname, resolve, sep } from "node:path";
+import { promisify } from "node:util";
+
+const execAsync = promisify(execCb);
 import type {
   CopilotClient,
   CopilotClientOptions,
@@ -59,6 +63,18 @@ async function setupWorkDir(
       } else if (file.source && skillPath) {
         const sourcePath = join(skillPath, file.source);
         await cp(sourcePath, targetPath);
+      }
+    }
+  }
+
+  // Run setup commands (e.g. build to produce a binlog, then strip sources)
+  if (scenario.setup?.commands) {
+    for (const cmd of scenario.setup.commands) {
+      try {
+        await execAsync(cmd, { cwd: workDir, timeout: 120_000 });
+      } catch {
+        // Setup commands may return non-zero exit codes
+        // (e.g. building a broken project to produce a binlog)
       }
     }
   }

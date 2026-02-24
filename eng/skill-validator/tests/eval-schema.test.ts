@@ -84,6 +84,42 @@ describe("parseEvalConfig", () => {
     expect(s.max_turns).toBe(10);
     expect(s.max_tokens).toBe(5000);
   });
+
+  it("parses setup with commands", () => {
+    const config = parseEvalConfig({
+      scenarios: [
+        {
+          name: "Test",
+          prompt: "Analyze binlog",
+          setup: {
+            copy_test_files: true,
+            commands: [
+              "dotnet build -bl:build.binlog",
+              "node -e \"console.log('cleanup')\"",
+            ],
+          },
+        },
+      ],
+    });
+    const s = config.scenarios[0];
+    expect(s.setup?.commands).toEqual([
+      "dotnet build -bl:build.binlog",
+      "node -e \"console.log('cleanup')\"",
+    ]);
+  });
+
+  it("accepts setup without commands", () => {
+    const config = parseEvalConfig({
+      scenarios: [
+        {
+          name: "Test",
+          prompt: "Do it",
+          setup: { copy_test_files: true },
+        },
+      ],
+    });
+    expect(config.scenarios[0].setup?.commands).toBeUndefined();
+  });
 });
 
 describe("validateEvalConfig", () => {

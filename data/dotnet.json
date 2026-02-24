@@ -1876,6 +1876,22 @@
         },
         "tool": "customBiggerIsBetter",
         "date": 1771864461012
+      },
+      {
+        "tool": "customBiggerIsBetter",
+        "date": 1771930088995,
+        "model": "claude-opus-4.6",
+        "commit": {
+          "timestamp": "2026-02-24T08:22:55+00:00",
+          "message": "Fix extractJson picking up non-JSON brace groups (e.g., C# code) (#100)",
+          "url": "https://github.com/dotnet/skills/commit/f9cf1d6d121a91911ce715265c993272ab9e96fd",
+          "id": "f9cf1d6d121a91911ce715265c993272ab9e96fd",
+          "author": {
+            "username": "ViktorHofer",
+            "name": "Viktor Hofer"
+          }
+        },
+        "benches": []
       }
     ],
     "Efficiency": [
@@ -3753,8 +3769,24 @@
         },
         "tool": "customSmallerIsBetter",
         "date": 1771864461012
+      },
+      {
+        "tool": "customSmallerIsBetter",
+        "date": 1771930088995,
+        "model": "claude-opus-4.6",
+        "commit": {
+          "timestamp": "2026-02-24T08:22:55+00:00",
+          "message": "Fix extractJson picking up non-JSON brace groups (e.g., C# code) (#100)",
+          "url": "https://github.com/dotnet/skills/commit/f9cf1d6d121a91911ce715265c993272ab9e96fd",
+          "id": "f9cf1d6d121a91911ce715265c993272ab9e96fd",
+          "author": {
+            "username": "ViktorHofer",
+            "name": "Viktor Hofer"
+          }
+        },
+        "benches": []
       }
     ]
   },
-  "lastUpdate": 1771864461012
+  "lastUpdate": 1771930088995
 }

@@ -199,6 +199,8 @@ export interface SkillVerdict {
   confidenceInterval?: ConfidenceInterval;
   isSignificant?: boolean;
   reason: string;
+  /** Categorizes why the verdict failed, if it did. */
+  failureKind?: "threshold" | "completion_regression" | "no_scenarios" | "missing_eval" | "skill_not_activated";
   profileWarnings?: string[];
   skillNotActivated?: boolean;
 }
@@ -207,7 +209,6 @@ export interface ValidatorConfig {
   minImprovement: number;
   requireCompletion: boolean;
   requireEvals: boolean;
-  strict: boolean;
   verbose: boolean;
   model: string;
   judgeModel: string;
@@ -220,6 +221,7 @@ export interface ValidatorConfig {
   confidenceLevel: number;
   reporters: ReporterSpec[];
   skillPaths: string[];
+  verdictWarnOnly: boolean;
   resultsDir?: string;
   testsDir?: string;
 }

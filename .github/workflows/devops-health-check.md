@@ -7,7 +7,7 @@ description: >
   dispatches investigation workers for new critical/warning findings.
 
 on:
-  schedule: "0 0 * * *"
+  schedule: daily
   slash_command: health-check
   workflow_dispatch:
 

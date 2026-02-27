@@ -1,14 +1,14 @@
 # DevOps Agentic Workflows
 
-Cross-cutting [GitHub Agentic Workflow](https://github.com/github/gh-aw) templates for repository-wide DevOps automation.
+Cross-cutting [GitHub Agentic Workflow](https://github.com/github/gh-aw) workflows for repository-wide DevOps automation.
 
-These workflows monitor the _entire repo_ (all components, all pipelines, all PRs), unlike the component-specific workflows in `src/dotnet-msbuild/agentic-workflows/`.
+The workflow source files live in `.github/workflows/` and are compiled with `gh aw compile` to generate `.lock.yml` files (standard GitHub Actions YAML with security hardening). These workflows monitor the _entire repo_ (all components, all pipelines, all PRs), unlike the component-specific workflows in `src/dotnet-msbuild/agentic-workflows/`.
 
 ## Available Workflows
 
 | Workflow | Description | Trigger |
 |----------|-------------|---------|
-| [devops-health-check](../../.github/workflows/devops-health-check.md) | Daily orchestrator that collects repo health signals (pipelines, skill quality, PRs, infrastructure), computes a fingerprint-based diff against the previous run, and updates a pinned health dashboard issue | `schedule: 0 0 * * *` (daily midnight UTC), `/health-check` slash command, `workflow_dispatch` |
+| [devops-health-check](../../.github/workflows/devops-health-check.md) | Daily orchestrator that collects repo health signals (pipelines, skill quality, PRs, infrastructure), computes a fingerprint-based diff against the previous run, and updates a pinned health dashboard issue | `schedule: daily` (fuzzy daily), `/health-check` slash command, `workflow_dispatch` |
 | [devops-health-investigate](../../.github/workflows/devops-health-investigate.md) | Worker agent dispatched by the health check orchestrator to perform deep root-cause analysis on individual findings | `workflow_dispatch` (dispatched by orchestrator via `dispatch-workflow`) |
 
 ## Architecture
@@ -33,22 +33,24 @@ devops-health-investigate (Worker × N)
 ## Setup
 
 1. Install the `gh aw` CLI extension: `gh extension install github/gh-aw`
-2. The workflow `.md` files live in `.github/workflows/`; knowledge files live in `.github/aw/shared/`
-3. Compile: `gh aw compile` (from repo root)
-4. Commit both the `.md` and generated `.lock.yml` files
-5. The health check runs daily at midnight UTC, or on-demand via `/health-check`
+2. Compile: `gh aw compile` (from the repo root — this compiles all `.md` files in `.github/workflows/`)
+3. Commit both the `.md` and generated `.lock.yml` files
+4. The health check runs daily, or on-demand via `/health-check`
 
 ## Local Development
 
 ```powershell
-# Validate both workflows (from repo root)
-gh aw validate devops-health-check devops-health-investigate --strict
+# Compile workflows (generates .lock.yml from .md frontmatter)
+gh aw compile
 
-# Trial run (sandboxed)
-gh aw trial .github/workflows/devops-health-check.md --clone-repo dotnet/skills
+# Compile with validation
+gh aw compile --strict
 
-# Trial with both orchestrator + worker
-gh aw trial .github/workflows/devops-health-check.md .github/workflows/devops-health-investigate.md --clone-repo dotnet/skills
+# Dry-run (validates without triggering on GitHub Actions)
+gh aw run devops-health-check --dry-run
+
+# Run on GitHub Actions (from a pushed branch)
+gh aw run devops-health-check --push --ref <branch>
 ```
 
 ## File Structure
@@ -66,7 +68,8 @@ gh aw trial .github/workflows/devops-health-check.md .github/workflows/devops-he
         └── devops-investigate.lock.md  # Investigation playbooks & remediation templates
 
 eng/agentic-workflows/
-└── README.md                           # This file
+├── README.md                           # This file (documentation)
+└── pr-141-review-fixes.md              # PR review analysis
 ```
 
 ## Related

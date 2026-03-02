@@ -1,16 +1,16 @@
 ---
 name: build-perf-diagnostics
-description: "Reference knowledge for diagnosing MSBuild build performance issues. Only activate in MSBuild/.NET build context. Use when builds are slow, to identify bottlenecks using binary log analysis. Covers timeline analysis, node utilization, expensive targets/tasks, Roslyn analyzer impact, RAR performance, and critical path identification. Works with the binlog MCP tools for data-driven analysis."
+description: "Reference knowledge for diagnosing MSBuild build performance issues. Only activate in MSBuild/.NET build context. Use when builds are slow, to identify bottlenecks using binary log analysis. Covers timeline analysis, node utilization, expensive targets/tasks, Roslyn analyzer impact, RAR performance, and critical path identification."
 ---
 
 ## Performance Analysis Methodology
 
 1. **Generate a binlog**: `dotnet build /bl`
-2. **Load with binlog MCP**: `load_binlog`
-3. **Get overall picture**: `get_expensive_projects`, `get_expensive_targets`, `get_expensive_tasks`
-4. **Analyze node utilization**: `get_node_timeline`
-5. **Drill into bottlenecks**: `get_project_target_times`, `search_targets_by_name`
-6. **Check analyzers**: `get_expensive_analyzers`
+2. **Analyze the binlog** using MSBuild Structured Log Viewer or equivalent tooling
+3. **Get overall picture**: Identify expensive projects, targets, and tasks
+4. **Analyze node utilization**: Check the timeline for parallelism
+5. **Drill into bottlenecks**: Examine per-project target times and search for patterns
+6. **Check analyzers**: Look for Roslyn analyzer overhead in compilation
 
 ## Key Metrics and Thresholds
 
@@ -32,7 +32,7 @@ description: "Reference knowledge for diagnosing MSBuild build performance issue
 ### 2. Roslyn Analyzers and Source Generators
 
 - **Symptoms**: Csc task takes much longer than expected for file count (>2× clean compile time)
-- **Diagnosis**: `get_expensive_analyzers` → identify top offenders, compare Csc duration with and without analyzers
+- **Diagnosis**: Check analyzer overhead in the binlog → identify top offenders, compare Csc duration with and without analyzers
 - **Fixes**:
   - Conditionally disable in dev: `<RunAnalyzers Condition="'$(ContinuousIntegrationBuild)' != 'true'">false</RunAnalyzers>`
   - Per-configuration: `<RunAnalyzers Condition="'$(Configuration)' == 'Debug'">false</RunAnalyzers>`
@@ -45,7 +45,7 @@ description: "Reference knowledge for diagnosing MSBuild build performance issue
 
 ### 3. Serialization Bottlenecks (Single-threaded targets)
 
-- **Symptoms**: `get_node_timeline` shows most nodes idle while one works
+- **Symptoms**: Node timeline shows most nodes idle while one works
 - **Common culprits**: targets without proper dependency declaration, single project on critical path
 - **Fixes**: split large projects, optimize the critical path project, ensure proper `BuildInParallel`
 
@@ -70,18 +70,18 @@ description: "Reference knowledge for diagnosing MSBuild build performance issue
 - **Symptoms**: many small projects, each takes minimal time but overhead adds up
 - **Consider**: project consolidation, or use `/graph` mode for better scheduling
 
-## Using Binlog MCP Tools for Performance Analysis
+## Performance Analysis Workflow
 
-Step-by-step workflow with the actual MCP tool calls:
+Step-by-step workflow for analyzing build performance from a binlog:
 
-1. `load_binlog` → note total duration and node count
-2. `get_expensive_projects(top_number=5, sortByExclusive=true)` → find where time is spent
-3. `get_expensive_targets(top_number=10)` → which targets dominate
-4. `get_expensive_tasks(top_number=10)` → which tasks dominate
-5. `get_node_timeline()` → check parallelism utilization
-6. `get_expensive_analyzers(top_number=10)` → analyzer overhead
-7. For a specific slow project: `get_project_target_times(projectId=X)` → target breakdown
-8. Deep dive: `search_binlog(query="$time $target TargetName")` → timing for specific targets
+1. Open the binlog in MSBuild Structured Log Viewer → note total duration and node count
+2. Find expensive projects (sort by exclusive time) → find where time is spent
+3. Identify dominant targets → which targets consume the most time
+4. Identify dominant tasks → which tasks consume the most time
+5. Check the timeline → assess parallelism utilization
+6. Check analyzer overhead → compare analyzer time vs compilation time
+7. For a specific slow project: examine target breakdown
+8. Deep dive: search for specific targets and their timing
 
 ## Quick Wins Checklist
 

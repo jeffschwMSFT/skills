@@ -91,14 +91,14 @@ public class BuildSessionConfigTests
     {
         var mcpServers = new Dictionary<string, MCPServerDef>
         {
-            ["binlog-mcp"] = new MCPServerDef(
+            ["test-mcp"] = new MCPServerDef(
                 Command: "dotnet",
                 Args: ["run", "--project", "server"],
-                Tools: ["load_binlog", "get_diagnostics"])
+                Tools: ["test_tool", "test_other_tool"])
         };
         var config = AgentRunner.BuildSessionConfig(MockSkill, "gpt-4.1", "C:\\tmp\\work", mcpServers);
         Assert.NotNull(config.McpServers);
-        Assert.True(config.McpServers.ContainsKey("binlog-mcp"));
+        Assert.True(config.McpServers.ContainsKey("test-mcp"));
     }
 
     [Fact]
@@ -215,7 +215,7 @@ public class CheckPermissionTests
     [Fact]
     public void ApprovesRequestWithUnrelatedExtensionData()
     {
-        var req = MakeRequest("{\"kind\":\"other\",\"skill\":\"binlog-failure-analysis\"}");
+        var req = MakeRequest("{\"kind\":\"other\",\"skill\":\"build-perf-diagnostics\"}");
         var result = AgentRunner.CheckPermission(req, WorkDir, null);
         Assert.True(result);
     }

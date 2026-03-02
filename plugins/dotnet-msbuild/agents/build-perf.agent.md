@@ -17,16 +17,16 @@ Before starting any analysis, verify the context is MSBuild-related. If the work
 
 ### Step 1: Establish Baseline
 - Run the build with binlog: `dotnet build /bl:perf-baseline.binlog -m`
-- Load the binlog: `load_binlog`
+- Open the binlog for analysis
 - Record total build duration and node count
 
 ### Step 2: Top-down Analysis
-Execute these MCP tool calls in order:
-1. `get_node_timeline` → assess parallelism utilization
-2. `get_expensive_projects(top_number=10, sortByExclusive=true)` → find time-heavy projects
-3. `get_expensive_targets(top_number=15)` → find dominant targets
-4. `get_expensive_tasks(top_number=15)` → find dominant tasks
-5. `get_expensive_analyzers(top_number=10)` → check analyzer overhead
+Analyze the binlog systematically:
+1. Examine the node timeline → assess parallelism utilization
+2. Find expensive projects (sort by exclusive time, top 10) → find time-heavy projects
+3. Find dominant targets (top 15) → identify which targets consume the most time
+4. Find dominant tasks (top 15) → identify which tasks consume the most time
+5. Check analyzer overhead (top 10) → assess Roslyn analyzer impact
 
 ### Step 3: Bottleneck Classification
 Classify findings into categories:
@@ -39,10 +39,10 @@ Classify findings into categories:
 
 ### Step 4: Deep Dive
 For each identified bottleneck:
-- `get_project_target_times(projectId=X)` for the slowest project
-- `search_targets_by_name` for dominant targets across projects
-- `get_task_analyzers` for Csc tasks with high analyzer time
-- `search_binlog` for specific patterns
+- Examine per-project target times for the slowest project
+- Search for dominant targets across projects
+- Check analyzer time for Csc tasks with high analyzer overhead
+- Search the binlog for specific patterns
 
 ### Step 5: Recommendations
 Produce prioritized recommendations:

@@ -6,8 +6,6 @@ These are [GitHub Agentic Workflow](https://github.com/github/gh-aw) templates f
 
 | Workflow | Description | Trigger |
 |----------|-------------|---------|
-| [build-failure-analysis](build-failure-analysis.md) | Analyzes CI build failures via binlog and posts diagnostic comments with root cause and suggested fixes | `/analyze-build-failure` slash command, `workflow_dispatch` |
-| [build-perf-audit](build-perf-audit.md) | Runs a build, analyzes performance bottlenecks, and creates an issue with findings and optimization recommendations | `schedule: weekly`, `workflow_dispatch` |
 | [msbuild-pr-review](msbuild-pr-review.md) | Reviews MSBuild project file changes for anti-patterns, correctness issues, and modernization opportunities | `/review-msbuild` slash command |
 
 ## Setup

@@ -1,73 +1,5 @@
 <!-- AUTO-GENERATED — DO NOT EDIT -->
 
-# Analyzing MSBuild Failures with Binary Logs
-
-You have binlog MCP tool calls available — call them directly like any other tool. Do not use bash to install or run binlog tools.
-
-## Build Error Investigation (Primary Workflow)
-
-1. Call `load_binlog` with the absolute path to the `.binlog` file
-2. Call `get_diagnostics` with `includeErrors: true, includeDetails: true` — returns all errors with file paths, line numbers, and project context
-3. Call `list_projects` — shows all projects and their build status
-4. Call `get_file_from_binlog` to retrieve `.csproj` files for projects that had errors — binlogs embed all source files
-5. Call `get_evaluation_items_by_name` with `PackageReference` or `ProjectReference` to check dependencies
-6. If needed, call `search_binlog` with the error code (e.g., `"error CS0246"`) for additional context
-7. To detect cascading failures: call `search_binlog` with `under($project ProjectName) $target CoreCompile` — projects that never reached CoreCompile failed due to a dependency, not their own code
-
-**Write your diagnosis as soon as you have enough information.** Do not over-investigate.
-
-## Additional Workflows
-
-### Performance Investigation
-1. `load_binlog` → `get_expensive_targets` → `get_expensive_tasks` → `get_expensive_analyzers` → `search_targets_by_name` → `get_node_timeline`
-
-### Dependency/Evaluation Issues
-1. `load_binlog` → `list_projects` → `list_evaluations` → `get_evaluation_global_properties` → `get_evaluation_items_by_name`
-
-## ❌ DO NOT use bash for binlog analysis
-
-- Do not install `binlogtool`, `dotnet-script`, or any CLI tool — you already have tool calls
-- Do not write C# scripts to parse binlogs — the tool calls are faster and more reliable
-- Do not use `dotnet msbuild -flp` — use `get_diagnostics` and `search_binlog` instead
-
-## Key tools
-
-| Tool call | Purpose |
-|-----------|---------|
-| `load_binlog` | **Call first.** Load a binlog before using any other tool |
-| `get_diagnostics` | Get all errors/warnings with source locations |
-| `list_projects` | List projects and build status |
-| `get_file_from_binlog` | Read any embedded file (source, csproj, props) |
-| `list_files_from_binlog` | List all embedded files |
-| `search_binlog` | Freetext search with query syntax |
-| `get_evaluation_items_by_name` | Get PackageReference, ProjectReference, etc. |
-| `get_project_target_list` | List targets executed for a project |
-
-## Search query syntax (for `search_binlog`)
-
-- `"error CS0246"` — find specific errors
-- `$task Csc` — find C# compilation tasks
-- `under($project MyProject)` — scope to a project
-- `under($project X) $target CoreCompile` — check if project reached compilation
-- `$target TargetName` — find target executions
-- `not($query)` — exclude matches
-
-## Generating a binlog (only if none exists)
-
-```bash
-dotnet build /bl:build.binlog
-```
-
-## Common error patterns
-
-1. **CS0246 / "type not found"** → Missing PackageReference — check the .csproj
-2. **MSB4019 / "imported project not found"** → SDK install or global.json issue
-3. **NU1605 / "package downgrade"** → Version conflict in package graph
-4. **MSB3277 / "version conflicts"** → Binding redirect or version alignment issue
-5. **Project failed at ResolveProjectReferences** → Cascading failure from a dependency
-
----
-
 # Generate Binary Logs
 
 **Pass the `/bl` switch when running any MSBuild-based command.** This is a non-negotiable requirement for all .NET builds.
@@ -192,41 +124,21 @@ Use the `binlog-generation` skill to generate a binary log with the correct nami
 
 ## Step 2: Load the Binary Log
 
-```
-load_binlog with path: "<absolute-path-to-build.binlog>"
-```
+Open the binary log in MSBuild Structured Log Viewer or equivalent tooling for analysis.
 
 ## Step 3: List All Projects
 
-```
-list_projects with binlog_file: "<path>"
-```
-
-This returns all projects with their IDs and file paths.
+List all projects in the binlog with their IDs and file paths.
 
 ## Step 4: Get Evaluations for Each Project
 
-For each unique project file path, list its evaluations:
-
-```
-list_evaluations with:
-  - binlog_file: "<path>"
-  - projectFilePath: "<project-file-path>"
-```
+For each unique project file path, list its evaluations.
 
 Multiple evaluations for the same project indicate multi-targeting or multiple build configurations.
 
 ## Step 5: Check Global Properties for Each Evaluation
 
-For each evaluation, get the global properties to understand the build configuration:
-
-```
-get_evaluation_global_properties with:
-  - binlog_file: "<path>"
-  - evaluationId: <evaluation-id>
-```
-
-Look for properties like `TargetFramework`, `Configuration`, `Platform`, and `RuntimeIdentifier` that should differentiate output paths.
+For each evaluation, get the global properties to understand the build configuration. Look for properties like `TargetFramework`, `Configuration`, `Platform`, and `RuntimeIdentifier` that should differentiate output paths.
 
 Also check **solution-related properties** to identify multi-solution builds:
 - `SolutionFileName`, `SolutionName`, `SolutionPath`, `SolutionDir`, `SolutionExt` — differ when a project is built from multiple solutions
@@ -248,14 +160,7 @@ When analyzing clashes, filter evaluations based on the type of clash you're inv
 
 ## Step 6: Get Output Paths for Each Evaluation
 
-For each evaluation, retrieve the `OutputPath` and `IntermediateOutputPath`:
-
-```
-get_evaluation_properties_by_name with:
-  - binlog_file: "<path>"
-  - evaluationId: <evaluation-id>
-  - propertyNames: ["OutputPath", "IntermediateOutputPath", "BaseOutputPath", "BaseIntermediateOutputPath", "TargetFramework", "Configuration", "Platform"]
-```
+For each evaluation, retrieve the `OutputPath` and `IntermediateOutputPath` along with `BaseOutputPath`, `BaseIntermediateOutputPath`, `TargetFramework`, `Configuration`, and `Platform`.
 
 ## Step 7: Identify Clashes
 
@@ -269,20 +174,9 @@ Compare the `OutputPath` and `IntermediateOutputPath` values across all evaluati
 
 As additional evidence for OutputPath clashes, check if multiple project builds execute the `CopyFilesToOutputDirectory` target to the same path. Note that not all clashes manifest here - compilation outputs and other targets may also conflict.
 
-```
-search_binlog with:
-  - binlog_file: "<path>"
-  - query: "$target CopyFilesToOutputDirectory project(<project-name>.csproj)"
-```
+Search the binlog for `CopyFilesToOutputDirectory` target executions for the relevant projects.
 
-Then for each project ID that ran this target, examine the Copy task messages:
-
-```
-list_tasks_in_target with:
-  - binlog_file: "<path>"
-  - projectId: <project-id>
-  - targetId: <target-id-of-CopyFilesToOutputDirectory>
-```
+Then for each project that ran this target, examine the Copy task messages.
 
 Look for evidence of clashes in the messages:
 - `Copying file from "..." to "..."` - Active file writes
@@ -292,13 +186,7 @@ The `SkipUnchangedFiles` skip message often masks clashes - the build succeeds b
 
 ## Step 9: Check CoreCompile Execution Patterns (Optional)
 
-To understand which project instance did the actual compilation vs redundant work, check `CoreCompile`:
-
-```
-search_binlog with:
-  - binlog_file: "<path>"
-  - query: "$target CoreCompile project(<project-name>.csproj)"
-```
+To understand which project instance did the actual compilation vs redundant work, search the binlog for `CoreCompile` target executions for the relevant projects.
 
 Compare the durations:
 - The instance with a long `CoreCompile` duration (e.g., seconds) is the **primary build** that did the actual compilation
@@ -308,9 +196,9 @@ This helps distinguish the "real" build from redundant instances created by extr
 
 ### Caveat: `under()` Search in Multi-Solution Builds
 
-When using `search_binlog` with `under($project SolutionName)` to determine which solution a project instance belongs to, be aware that `under()` matches through the **entire build hierarchy**. If both solutions share a common ancestor (e.g., Arcade SDK's `Build.proj`), all project instances will appear "under" both solutions.
+When searching for project instances under a specific solution in the binlog, be aware that hierarchical matching goes through the **entire build hierarchy**. If both solutions share a common ancestor (e.g., Arcade SDK's `Build.proj`), all project instances will appear under both solutions.
 
-Instead, use `get_evaluation_global_properties` and compare the `SolutionFileName` / `CurrentSolutionConfigurationContents` properties to reliably determine which solution an evaluation belongs to.
+Instead, compare the `SolutionFileName` / `CurrentSolutionConfigurationContents` properties to reliably determine which solution an evaluation belongs to.
 
 ### Expected Output Structure
 
@@ -440,19 +328,19 @@ This is particularly wasteful for projects where the extra property has no effec
 ## Example Workflow
 
 ```
-1. load_binlog with path: "C:\repo\build.binlog"
+1. Open the binlog in MSBuild Structured Log Viewer
 
-2. list_projects → Returns projects with IDs
+2. List projects → Returns projects with IDs
 
 3. For project "MyLib.csproj":
-   list_evaluations → Returns evaluation IDs 1, 2 (net8.0, net9.0)
+   List evaluations → Returns evaluation IDs 1, 2 (net8.0, net9.0)
 
-4. get_evaluation_properties_by_name for evaluation 1:
+4. Check properties for evaluation 1:
    - TargetFramework: "net8.0"
    - OutputPath: "bin\Debug\net8.0\"
    - IntermediateOutputPath: "obj\Debug\net8.0\"
 
-5. get_evaluation_properties_by_name for evaluation 2:
+5. Check properties for evaluation 2:
    - TargetFramework: "net9.0"
    - OutputPath: "bin\Debug\net9.0\"
    - IntermediateOutputPath: "obj\Debug\net9.0\"
@@ -462,7 +350,7 @@ This is particularly wasteful for projects where the extra property has no effec
 
 ## Tips
 
-- Use `search_binlog` with query `"OutputPath"` to quickly find all OutputPath property assignments
+- Search the binlog for `"OutputPath"` to quickly find all OutputPath property assignments
 - Check `BaseOutputPath` and `BaseIntermediateOutputPath` as they form the root of output paths
 - The SDK default paths include `$(TargetFramework)` - clashes often occur when projects override these defaults
 - Remember that paths may be relative - normalize to absolute paths before comparing

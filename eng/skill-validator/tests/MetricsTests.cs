@@ -177,14 +177,14 @@ public class ExtractSkillActivationTests
         // SkillInvokedEvent has type "skill.invoked" and Data with "name" property
         var events = new List<AgentEvent>
         {
-            MakeEvent("skill.invoked", new() { ["name"] = "binlog-failure-analysis", ["path"] = "/skills/binlog-failure-analysis" }),
+            MakeEvent("skill.invoked", new() { ["name"] = "build-perf-diagnostics", ["path"] = "/skills/build-perf-diagnostics" }),
             MakeEvent("tool.execution_start", new() { ["toolName"] = "bash" }),
         };
 
         var result = MetricsCollector.ExtractSkillActivation(events, new Dictionary<string, int> { ["bash"] = 1 });
 
         Assert.True(result.Activated);
-        Assert.Equal(["binlog-failure-analysis"], result.DetectedSkills);
+        Assert.Equal(["build-perf-diagnostics"], result.DetectedSkills);
         Assert.Equal(1, result.SkillEventCount);
     }
 }

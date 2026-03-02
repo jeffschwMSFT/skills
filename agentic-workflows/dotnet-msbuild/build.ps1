@@ -5,7 +5,7 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$RepoRoot = Split-Path $PSScriptRoot -Parent
+$RepoRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $SkillsDir = Join-Path $RepoRoot 'plugins' 'dotnet-msbuild' 'skills'
 $DomainGatePattern = 'Only activate in MSBuild/\.NET build context'
 
@@ -59,7 +59,6 @@ Write-Host ''
 
 $KnowledgeGroups = [ordered]@{
     'build-errors' = @(
-        'binlog-failure-analysis'
         'binlog-generation'
         'check-bin-obj-clash'
         'including-generated-files'

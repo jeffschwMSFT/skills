@@ -169,7 +169,7 @@ Check if the latest entry's `date` timestamp is > 24h old (compare to current ti
 - 🟡 Warning (pipeline may not be publishing)
 - Fingerprint: `quality:benchmark-stale:{component}`
 
-### 1.4 PR & Review Health (R1–R5)
+### 1.4 PR & Review Health (R1–R6)
 
 ```
 GET /repos/{owner}/{repo}/pulls?state=open&sort=created&direction=asc&per_page=50
@@ -200,6 +200,24 @@ GET /repos/{owner}/{repo}/pulls?state=closed&sort=updated&direction=desc&per_pag
 ```
 Count merged PRs per day over the last 7 days.
 - 🔵 Info (metric only — reported in trends table, not fingerprinted)
+
+**R6 — PRs adding skills without CODEOWNERS coverage:**
+Identify open PRs that add or modify skills but lack matching ownership rules.
+
+1. **Fetch CODEOWNERS** from the default branch (check `/CODEOWNERS`, `.github/CODEOWNERS`, `docs/CODEOWNERS` in that order).
+   - If no CODEOWNERS file exists, skip this check (already covered by I1).
+
+2. **For each open PR**, fetch the list of changed files:
+   ```
+   GET /repos/{owner}/{repo}/pulls/{pr_number}/files?per_page=100
+   ```
+3. **Extract skill paths**: Filter changed files matching `src/*/skills/*/` (any depth). Deduplicate to distinct skill directories (e.g., `src/dotnet/skills/my-new-skill`).
+4. **Check CODEOWNERS**: For each distinct skill directory, check whether any rule in CODEOWNERS covers that path. A path is covered if CODEOWNERS contains a line whose pattern matches the skill directory (e.g., `/src/dotnet/skills/my-new-skill/` or a broader `/src/dotnet/` rule).
+5. **Flag uncovered skills**: For each PR that has at least one uncovered skill path:
+   - 🟡 Warning
+   - Fingerprint: `pr:{pr_number}:no-skill-owner`
+   - Include the list of uncovered skill paths in the finding details
+   - Link to the PR
 
 ### 1.5 Infrastructure Checks (I1–I6)
 

@@ -38,6 +38,21 @@ This repository contains the .NET team's curated set of core skills and custom a
    /plugin update <plugin>@dotnet-agent-skills
    ```
 
+### VS Code / VS Code Insiders (Preview)
+
+> [!IMPORTANT]  
+> VS Code plugin support is a preview feature and subject to change. You may need to enable it first.
+
+```jsonc
+// settings.json
+{
+  "chat.plugins.enabled": true,
+  "chat.plugins.marketplaces": ["dotnet/skills"]
+}
+```
+
+Once configured, type `/plugins` in Copilot Chat or use the `@agentPlugins` filter in Extensions to browse and install plugins from the marketplace.
+
 ### ⚡ Agentic Workflows
 
 Some plugins include [GitHub Agentic Workflow](https://github.com/github/gh-aw) templates for CI/CD automation:

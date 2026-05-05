@@ -1202,17 +1202,18 @@ jobs:
 
   # ==========================================================================
   # DEPLOY DASHBOARD
-  # Scheduled runs only: assemble data from both branches + UI → gh-pages
-  # No data generation — pure copy and deploy.
+  # Scheduled runs + manual dispatch on main: assemble data from both
+  # branches + UI → gh-pages. No data generation — pure copy and deploy.
   # ==========================================================================
   deploy-dashboard:
     needs: [discover, publish-token-data, publish-eval-data, publish-session-data]
     if: >-
       always() &&
       !cancelled() &&
-      needs.discover.result == 'success' &&
-      needs.discover.outputs.has_plugins == 'true' &&
-      (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
+      (
+        (needs.discover.result == 'success' && needs.discover.outputs.has_plugins == 'true' && github.event_name == 'schedule') ||
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      )
     concurrency:
       group: deploy-dashboard
       cancel-in-progress: false
